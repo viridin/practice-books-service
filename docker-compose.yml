@@ -1,14 +1,28 @@
-version: '3.5'
+version: '3.6'
 
 services:
+  db:
+    image: postgres
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD:$POSTGRES_PASSWORD
+    ports:
+      - "$POSTGRES_PORT:$POSTGRES_PORT_DOCKER"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: book
+    container_name: my-book-container
     environment:
       NODE_ENV: production
     ports:
       - '3000:3000'
+    depends_on:
+      - db
     volumes:
       - ./src:/app/src
