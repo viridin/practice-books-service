@@ -1,28 +1,33 @@
 version: '3.6'
-
 services:
-  db:
-    image: postgres
-    restart: always
-    env_file:
-      - .env
-    environment:
-      - POSTGRES_USER=$POSTGRES_USER
-      - POSTGRES_PASSWORD:$POSTGRES_PASSWORD
-    ports:
-      - "$POSTGRES_PORT:$POSTGRES_PORT_DOCKER"
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
-  app:
+  # NestJS application service
+  nestjs-app:
+    image: nestjs-app
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: my-book-container
-    environment:
-      NODE_ENV: production
     ports:
-      - '3000:3000'
+      - "3000:3000" # Map the app's port to the host
     depends_on:
-      - db
+      - postgres-db # Ensure that the database service is running
+    environment:
+      POSTGRES_HOST: postgres-db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: posdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: userpass
+
+  # PostgreSQL database service
+  postgres-db:
+    image: postgres
+    environment:
+      POSTGRES_DB: posdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: userpass
+    ports:
+      - "5432:5432" # Map the database port to the host
     volumes:
-      - ./src:/app/src
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data: # Docker volume for PostgreSQL data persistence
