@@ -8,6 +8,6 @@ import { BooksService } from './books.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Book])],
   controllers: [BooksController],
-  providers: [BooksService], // Make sure to add BooksService as a provider
+  providers: [BooksService],
 })
 export class BooksModule {}
