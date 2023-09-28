@@ -8,7 +8,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Book-Service')
     .setDescription('HTTP service capable of processing POST GET requests')
-    .setVersion('1.1')
+    .setVersion('1.2')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -15,6 +15,13 @@ export class BooksService {
   async findAll(): Promise<Book[]> {
     return this.bookRepository.find();
   }
+  
+  async findPageBooks(limit: number, start: number): Promise<Book[]> {
+    return this.bookRepository.find({
+      skip: start,
+      take: limit,
+    });
+  }
 
   async findOne(id: number): Promise<Book | undefined> {
     return this.bookRepository.findOne({ where: { id } });
