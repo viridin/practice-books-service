@@ -5,13 +5,15 @@ import { UserModule } from '../user/user.module';
 import { LocalStrategy } from './local.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: 'yourkey',
+      secret: process.env.JWT_PASSWORD,
       signOptions: { expiresIn: '1h' },
     }),
   ],

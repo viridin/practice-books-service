@@ -1,4 +1,4 @@
-version: '3.6'
+version: '3.7'
 services:
   nestjs-app:
     image: nestjs-app
@@ -6,26 +6,30 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "${APP_PORT}:${APP_PORT}"
+    env_file:
+      - .env
     depends_on:
       - postgres-db
     environment:
       POSTGRES_HOST: postgres-db
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: newdb
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: userpass
+      POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
 
   postgres-db:
     image: postgres
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: newdb
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: userpass
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:${DB_PORT}"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data:${DB_DATA}
 
 volumes:
   postgres-data:

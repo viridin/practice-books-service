@@ -7,15 +7,14 @@ import { AuthGuard } from '@nestjs/passport';
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  @Get('all')
   @UseGuards(AuthGuard('local'))
+  @Get('all')
   async findAll(
     ): Promise<Book[]> {
     return this.booksService.findAll();
   }
 
   @Get()
-  @UseGuards(AuthGuard('local'))
   async findpageAll(
     @Query('limit') limit: number,
     @Query('start') start: number,
@@ -24,13 +23,11 @@ export class BooksController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('local'))
   async findOne(@Param('id') id: string): Promise<Book> {
     return this.booksService.findOne(+id);
   }
 
   @Post()
-  @UseGuards(AuthGuard('local'))
   async create(@Body() bookData: Partial<Book>): Promise<Book> {
     return this.booksService.create(bookData);
   }
