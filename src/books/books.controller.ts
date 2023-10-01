@@ -1,18 +1,21 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { Book } from './book.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Get('all')
+  @UseGuards(AuthGuard('local'))
   async findAll(
     ): Promise<Book[]> {
     return this.booksService.findAll();
   }
 
   @Get()
+  @UseGuards(AuthGuard('local'))
   async findpageAll(
     @Query('limit') limit: number,
     @Query('start') start: number,
@@ -21,11 +24,13 @@ export class BooksController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('local'))
   async findOne(@Param('id') id: string): Promise<Book> {
     return this.booksService.findOne(+id);
   }
 
   @Post()
+  @UseGuards(AuthGuard('local'))
   async create(@Body() bookData: Partial<Book>): Promise<Book> {
     return this.booksService.create(bookData);
   }

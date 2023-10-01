@@ -12,14 +12,14 @@ services:
     environment:
       POSTGRES_HOST: postgres-db
       POSTGRES_PORT: 5432
-      POSTGRES_DB: posdb
+      POSTGRES_DB: newdb
       POSTGRES_USER: user
       POSTGRES_PASSWORD: userpass
 
   postgres-db:
     image: postgres
     environment:
-      POSTGRES_DB: posdb
+      POSTGRES_DB: newdb
       POSTGRES_USER: user
       POSTGRES_PASSWORD: userpass
     ports:
