@@ -4,7 +4,6 @@ import { Book } from './book.entity';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('books')
-@UseGuards(AuthGuard('jwt'))
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
@@ -32,6 +31,7 @@ export class BooksController {
   }
 
   @Post()
+  @UseGuards(AuthGuard('jwt'))
   async create(@Body() bookData: Partial<Book>): Promise<Book> {
     return this.booksService.create(bookData);
   }

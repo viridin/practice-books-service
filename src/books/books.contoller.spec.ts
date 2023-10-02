@@ -2,9 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BooksController } from './books.controller';
 import { BooksService } from './books.service';
 import { Book } from './book.entity';
-import { AuthGuard } from '@nestjs/passport';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
+import { AuthGuard, PassportModule } from '@nestjs/passport';
+
 
 describe('BooksController', () => {
   let controller: BooksController;
@@ -26,7 +27,13 @@ describe('BooksController', () => {
           useValue: mockBooksService,
         },
       ],
-    }).compile();
+      imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+      ],
+    })
+    .overrideGuard(AuthGuard('jwt')) // Override the JWT guard
+    .useValue({ canActivate: () => true }) // Mock the guard to always return true
+    .compile();
 
     controller = module.get<BooksController>(BooksController);
     app = module.createNestApplication();
@@ -49,7 +56,7 @@ describe('BooksController', () => {
       ];
 
       mockBooksService.findAll.mockReturnValue(books);
-
+      
       const response = await request(app.getHttpServer()).get('/books/all');
 
       expect(response.status).toBe(200);
@@ -112,11 +119,11 @@ describe('BooksController', () => {
       };
       const createdBook: Book = { 
         id: 3,
-  title: 'New Book',
-  author: 'New Author',
-  year: 2022,
+        title: 'New Book',
+        author: 'New Author',
+        year: 2022,
        };
-
+     
       mockBooksService.create.mockReturnValue(createdBook);
 
       const response = await request(app.getHttpServer())
