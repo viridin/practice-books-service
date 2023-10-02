@@ -1,13 +1,13 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards, NotFoundException } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { Book } from './book.entity';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('books')
+@UseGuards(AuthGuard('jwt'))
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  @UseGuards(AuthGuard('local'))
   @Get('all')
   async findAll(
     ): Promise<Book[]> {
@@ -24,6 +24,10 @@ export class BooksController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Book> {
+    const book = await this.booksService.findOne(+id);
+    if (!book) {
+      throw new NotFoundException(`Book with ID ${id} not found`);
+    }
     return this.booksService.findOne(+id);
   }
 
