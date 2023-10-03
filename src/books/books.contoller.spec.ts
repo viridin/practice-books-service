@@ -133,5 +133,14 @@ describe('BooksController', () => {
       expect(response.status).toBe(201);
       expect(response.body).toEqual(createdBook);
     });
+
+    it('should return a 400 status if request body is missing required fields', async () => {
+      const invalidBookData = {};
+      const response = await request(app.getHttpServer())
+        .post('/books')
+        .send(invalidBookData);
+
+      expect(response.status).toBe(400);
+    });
   });
 });

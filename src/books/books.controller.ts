@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards, NotFoundException, BadRequestException } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { Book } from './book.entity';
 import { AuthGuard } from '@nestjs/passport';
@@ -33,6 +33,9 @@ export class BooksController {
   @Post()
   @UseGuards(AuthGuard('jwt'))
   async create(@Body() bookData: Partial<Book>): Promise<Book> {
+    if (!bookData.title || !bookData.author || !bookData.year) {
+      throw new BadRequestException('Title, author and year are required fields');
+    }
     return this.booksService.create(bookData);
   }
 }

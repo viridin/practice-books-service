@@ -21,7 +21,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-      throw new UnauthorizedException('Invalid password credentials');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     return user;
