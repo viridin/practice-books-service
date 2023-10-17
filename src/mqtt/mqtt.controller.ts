@@ -19,7 +19,7 @@ export class MqttController {
     console.log(`Received and saved data from topic1: ${JSON.stringify(book)}`);
   }
 
-  @Post('publish')
+  @Post('publish') //publish data from post to topic
   async publishToTopic3(@Payload() postData: any): Promise<void> {
     const topic = 'top';
     await this.mqttClient.emit(topic, postData );
