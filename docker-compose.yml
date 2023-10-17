@@ -1,0 +1,60 @@
+
+version: '3.7'
+services:
+  nestjs-app:
+    image: nestjs-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    env_file:
+      - .env
+    depends_on:
+      - postgres-db
+    environment:
+      POSTGRES_HOST: postgres-db
+      POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - default
+
+  postgres-db:
+    image: postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER_NAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - postgres-data:${DB_DATA}
+    networks:
+      - default
+
+  broker:
+    image: eclipse-mosquitto
+    hostname: mosquitto-broker
+    container_name: mosquitto-broker
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./config:/mosquitto/config:rw
+      - ./data:/mosquitto/data:rw
+      - ./log:/mosquitto/log:rw
+    networks:
+      - default
+
+volumes:
+  postgres-data:
+  config:
+  data:
+  log:
+networks:
+  default:
+  
